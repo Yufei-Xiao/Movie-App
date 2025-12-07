@@ -6,7 +6,7 @@ import Spinner from './components/Spinner'
 import MovieCard from './components/MovieCard'
 import { use } from 'react'
 import { getTrendingMovies,updateSearchCount } from './appwrite'
-const API_BASE_URL='https://api.themoviedb.org/3'
+/*const API_BASE_URL='https://api.themoviedb.org/3'
 const API_KEY=import.meta.env.VITE_TMDB_API_KEY;
 const API_OPTIONS={
   method:"GET",
@@ -14,7 +14,9 @@ const API_OPTIONS={
     accept:'application/json',
     Authorization:`Bearer ${API_KEY}`
   }
-}
+}*/
+
+
 const App=()=>{
   const [searchTerm,setSearchTerm]=useState("");
   const [errorMessage,setErrorMessage]=useState("");
@@ -27,10 +29,15 @@ const App=()=>{
     setIsLoading(true);
     setErrorMessage('');
     try{
-      const endpoint=query
+      /*const endpoint=query
         ?`${API_BASE_URL}/search/movie?query=${encodeURIComponent(query)}`
         :`${API_BASE_URL}/discover/movie?sort_by=popularity.desc`
-      const response=await fetch(endpoint,API_OPTIONS);
+      const response=await fetch(endpoint,API_OPTIONS);*/
+      const path = query
+      ? `search/movie?query=${encodeURIComponent(query)}`
+      : `discover/movie?sort_by=popularity.desc`;
+
+      const response = await fetch(`/api/tmdb?path=${encodeURIComponent(path)}`);
       if(!response.ok){
         throw new Error('Failed to fetch movies');
       }
@@ -43,6 +50,7 @@ const App=()=>{
       setMovieList(data.results||[]);
       
       if(query && data.results.length>0){
+
         await updateSearchCount(query,data.results[0]);
       }
     }catch(error){
@@ -102,11 +110,11 @@ const App=()=>{
               <p className='text-red-500'>{errorMessage}</p>
             ):(
               <ul>
-                {movieList.map((movie)=>{
-                  return(
+                {[...movieList]
+                  .sort((a, b) => b.popularity - a.popularity)
+                  .map((movie) => (
                     <MovieCard key={movie.id} movie={movie}/>
-                  )
-                })}
+                  ))}
               </ul>
             )
           }
