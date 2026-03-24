@@ -4,9 +4,9 @@ import './App.css'
 import Search from './components/Search'
 import Spinner from './components/Spinner'
 import MovieCard from './components/MovieCard'
-import { use } from 'react'
 import { getTrendingMovies,updateSearchCount } from './appwrite'
-/*const API_BASE_URL='https://api.themoviedb.org/3'
+
+const API_BASE_URL='https://api.themoviedb.org/3'
 const API_KEY=import.meta.env.VITE_TMDB_API_KEY;
 const API_OPTIONS={
   method:"GET",
@@ -14,7 +14,7 @@ const API_OPTIONS={
     accept:'application/json',
     Authorization:`Bearer ${API_KEY}`
   }
-}*/
+}
 
 
 const App=()=>{
@@ -37,7 +37,7 @@ const App=()=>{
       ? `search/movie?query=${encodeURIComponent(query)}`
       : `discover/movie?sort_by=popularity.desc`;
 
-      const response = await fetch(`/api/tmdb?path=${encodeURIComponent(path)}`);
+      const response = await fetch(`${API_BASE_URL}/${path}`, API_OPTIONS);
       if(!response.ok){
         throw new Error('Failed to fetch movies');
       }
